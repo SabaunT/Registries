@@ -12,7 +12,7 @@ pragma solidity 0.5.8;
  * 
  * This code does not require "owner" checks and so on.
  */
-contract ObjectStorage {
+contract BaseObjectStorage {
 
     struct ObjectAttributeSchema {
         uint256 row1; //attributes
@@ -22,7 +22,7 @@ contract ObjectStorage {
         uint256 index;
     }
 
-    mapping(address => ObjectAttributeSchema) objectRecordsInStorage; //storage for attributes
+    mapping(address => ObjectAttributeSchema) private objectRecordsInStorage; //storage for attributes
     address[] objectIndexes; //store addresses by index, used to ease CRUD operations
     
     /* Could be added
@@ -30,16 +30,16 @@ contract ObjectStorage {
     event StorageInsert(address pk, uint256 index, bytes32 row1, uint256 row2, bool row3);
     */
     
-    function insertInstance(uint256 _row1, uint256 _row2, bool _row3) public returns (uint256) {
-        if (isInstance(msg.sender)) {
+    function insertInstance(address _inst, uint256 _row1, uint256 _row2, bool _row3) public returns (uint256) {
+        if (isInstance(_inst)) {
             revert("Instance is already in storage");
         }
 
-        objectRecordsInStorage[msg.sender] = ObjectAttributeSchema(
+        objectRecordsInStorage[_inst] = ObjectAttributeSchema(
             _row1,
             _row2,
             _row3,
-            objectIndexes.push(msg.sender) - 1
+            objectIndexes.push(_inst) - 1
         );
         
         //emit StorageInsert
@@ -47,13 +47,31 @@ contract ObjectStorage {
     }
 
     //for any attribute in object schema
-    function updateInstance(uint256 _row1) public {
-        if (!isInstance(msg.sender)) {
+    function updateInstance(address _inst, uint256 _row1) public {
+        if (!isInstance(_inst)) {
             revert("There are no instances");
         }
         
-        objectRecordsInStorage[msg.sender].row1 = _row1;
+        objectRecordsInStorage[_inst].row1 = _row1;
         //emit StorageUpdate;
+    }
+
+    // pureness of this type of storage organisation is that 
+    // you don't have to `delete` items in mapping
+    function deleteInstanceRecords(address _inst) public returns (uint256) {
+        if (!isInstance(_inst)) {
+            revert("no such record");
+        }
+
+        uint256 deletingIndex = objectRecordsInStorage[_inst].index;
+        address movingToDeletedPositionKey = objectIndexes[objectIndexes.length - 1];
+
+        objectIndexes[deletingIndex] = movingToDeletedPositionKey;
+        objectRecordsInStorage[movingToDeletedPositionKey].index = deletingIndex;
+        
+        // Now an object is considered to be deleted, because it won't pass `isInstance`
+        // however it is still in mapping
+        objectIndexes.pop();
     }
 
     function getInstance(address instanceAddress) public view returns (uint256, uint256, bool) {
