@@ -8,7 +8,7 @@ pragma solidity 0.5.8;
  *
  *
  * For this particular example address was chose as a "pk" unique variable,
- * while 'index' is used for indexing/searching/deleting easily.
+ * while 'index' is used for easy referencing.
  * 
  * This code does not require "owner" checks and so on.
  */
