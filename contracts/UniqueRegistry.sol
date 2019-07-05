@@ -4,7 +4,7 @@ pragma solidity 0.5.8;
  * This is another type of data organisation which 
  * distinctive feature is making links to record by it's
  * attributes. So, this makes easier to retrieve data with various ways.
- * But one of constraints is that data should be `unique`.
+ * But one of constraints is that data (attributes!) should be `unique`.
  *
  *
  * This type of data organisation was successfully implemented by smartz.io
