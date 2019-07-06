@@ -42,7 +42,9 @@ pragma solidity 0.5.8;
     }
 
     function findByRow1(uint256 _row1Value) public view returns (uint256, bytes32) {
-        UniqueData memory uniqueRecord = dataStorage[findIDByRow1Value(_row1Value)];
+        /// But writing (adding) to storage (records) would be cheaper with memory initialization according to
+        /// https://medium.com/coinmonks/ethereum-solidity-memory-vs-storage-which-to-use-in-local-functions-72b593c3703a
+        UniqueData storage uniqueRecord = dataStorage[findIDByRow1Value(_row1Value)]; 
         return (uniqueRecord.row1, uniqueRecord.row2);
     }
 

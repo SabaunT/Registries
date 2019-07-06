@@ -8,7 +8,7 @@ pragma solidity 0.5.8;
  * It is shown here how to make one-to-many relations data organisation.
  *
  *
- * That looks more scientific than practical.
+ * That looks more scientific than practical (for nested sets).
  */
 
 

@@ -11,6 +11,7 @@ pragma solidity 0.5.8;
  * while 'index' is used for easy referencing.
  * 
  * This code does not require "owner" checks and so on.
+ * Library implementation: https://github.com/rob-Hitchens/UnorderedKeySet <- more convenient
  */
 contract BaseObjectStorage {
 
